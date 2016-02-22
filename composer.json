@@ -1,0 +1,20 @@
+{
+	"name": "senseio",
+	"description": "SEO crawler",
+	"repositories": [
+		{"type": "vcs", "url": "https://github.com/mongodb/mongo-php-library.git"}
+	],
+	"require":
+	{
+		"mongodb/mongodb": "^1.0.0"
+	},
+	"require-dev": {
+	},
+	"config": {
+		"process-timeout": 600
+	},
+	"autoload": {
+		"files": [
+		]
+	}
+}
