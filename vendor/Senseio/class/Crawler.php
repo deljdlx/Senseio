@@ -2,9 +2,7 @@
 
 
 
-namespace SenSeio;
-
-
+namespace Senseio;
 
 
 class Crawler
@@ -66,24 +64,37 @@ class Crawler
 
 
 
-		$links=$this->startPage->getLinks();
-
-
 		if($recursive) {
 
-			foreach ($links as $link) {
-				if($link->isInternal() && $link->to()->getURL()!=$this->startURL) {
-					$this->storage->saveLink($link);
+
+            $links=$this->startPage->getLinks();
 
 
-					if(!$this->storage->pageExists($link->to())) {
-						$this->storage->lockPage($link->to());
-						$this->storage->savePage($link->to());
-					}
 
-				}
-			}
-			$this->storage->pageCrawled($this->startPage);
+
+            if(!$this->storage->isPageCrawled($this->startPage)) {
+                foreach ($links as $link) {
+                    if($link->to()->getURL()!=$this->startURL) {
+
+
+
+                        if(!$this->storage->linkExists($link)) {
+                            $this->storage->saveLink($link);
+                        }
+
+
+
+                        if($link->isInternal()) {
+
+                            if(!$this->storage->pageExists($link->to())) {
+                                $this->storage->lockPage($link->to());
+                                $this->storage->savePage($link->to());
+                            }
+                        }
+                    }
+                }
+                $this->storage->pageCrawled($this->startPage);
+            }
 		}
 
 

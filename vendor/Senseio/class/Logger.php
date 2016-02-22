@@ -2,7 +2,7 @@
 
 
 
-namespace SenSeio;
+namespace Senseio;
 
 
 

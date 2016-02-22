@@ -55,7 +55,7 @@ class MongoStorage
 
 
 	public function pageCrawled($page) {
-		$this->pages->findOneAndUpdate(array(
+		$this->pages->UpdateMany(array(
 			'url'=>$page->getURL()
 		),
 			array(
@@ -65,6 +65,22 @@ class MongoStorage
 			)
 		);
 	}
+
+    public function isPageCrawled($page) {
+        $item=$this->pages->findOne(array(
+            'url'=>$page->getURL(),
+            'crawled'=>true
+        ));
+        if($item) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
+
 
 	public function savePage($page, $testExists=false) {
 
@@ -76,21 +92,26 @@ class MongoStorage
 
 		$data['crawled']=false;
 
-		$this->pages->findOneAndUpdate(array(
-			'url'=>$page->getURL()
-			),
-			array(
-				'$set'=>$data,
-			),
-			array(
-			'upsert'=>true
-			)
-		);
 
-		if($this->logger) {
-			$this->logger->notice(round(memory_get_usage()/1024) ."\t\t".round($page->getLoadingTime(),3)."\t\t".$page->getStatusCode()."\t".$page->getURL());
-		}
+        try {
+            $this->pages->findOneAndUpdate(array(
+                    'url'=>$page->getURL()
+                ),
+                array(
+                    '$set'=>$data,
+                ),
+                array(
+                    'upsert'=>true
+                )
+            );
 
+            if($this->logger) {
+                $this->logger->notice('PAGE INSERT' ."\t\t".round($page->getLoadingTime(),3)."\t\t".$page->getStatusCode()."\t".$page->getURL());
+            }
+        }
+        catch(\Exception $e) {
+            $this->logger->notice('PAGE INSERT FAILD' ."\t\t".$page->getURL());
+        }
 
 	}
 
@@ -138,8 +159,27 @@ class MongoStorage
 		else {
 			return false;
 		}
-
 	}
+
+
+    public function linkExists($link) {
+        $item=$this->links->findOne(array(
+            'from'=>$link->from()->getURL(),
+            'to'=>$link->to()->getURL(),
+            'caption'=>$link->getCaption(),
+        ));
+
+        if($item) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+    }
+
+
+
 
 
 	public function getAllPage() {
@@ -174,13 +214,23 @@ class MongoStorage
 
 
 
-		$this->links->insertOne(
-			array(
-				'from'=>$link->from()->getURL(),
-				'to'=>$link->from()->getURL(),
-				'caption'=>$link->getCaption(),
-			)
-		);
+        try {
+            $this->links->insertOne(
+                array(
+                    'from'=>$link->from()->getURL(),
+                    'to'=>$link->to()->getURL(),
+                    'caption'=>$link->getCaption(),
+                )
+            );
+
+            if($this->logger) {
+                $this->logger->notice('LINK INSERT' ."\t\t".$link->from()->getURL()."\t\t".$link->getCaption());
+            }
+        }
+        catch(\Exception $exception) {
+                $this->logger->notice('LINK INSERT FAILED' ."\t\t".$link->from()->getURL()."\t\t"."\t\t".$link->from()->getURL().$link->getCaption());
+        }
+
 
 	}
 

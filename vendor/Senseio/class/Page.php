@@ -41,10 +41,15 @@ class Page
 
 	public function __construct($url) {
 
-		$this->url=$url;
+		$this->url=preg_replace('`/$`', '', $url);
 		$data=parse_url($url);
 
-		$this->rootURL=$data['scheme'].'://'.$data['host'];
+
+        if(isset($data['scheme']) && isset($data['host'])) {
+            $this->rootURL=$data['scheme'].'://'.$data['host'];
+        }
+
+
 	}
 
 
