@@ -39,7 +39,25 @@ class Page
 
 	protected $statusCode;
 
-	public function __construct($url) {
+
+	protected $depth=0;
+
+
+
+	protected $crawlStatus=0;
+
+
+
+
+	const STATUS_CREATED=0;
+	const STATUS_CRAWLING=1;
+	const STATUS_CRAWLED=2;
+
+
+
+	public function __construct($url, $depth=0) {
+
+		$this->depth=$depth;
 
 		$this->url=preg_replace('`/$`', '', $url);
 		$data=parse_url($url);
@@ -48,11 +66,27 @@ class Page
         if(isset($data['scheme']) && isset($data['host'])) {
             $this->rootURL=$data['scheme'].'://'.$data['host'];
         }
-
-
 	}
 
 
+	public function getCrawlStatus() {
+		return $this->crawlStatus;
+	}
+
+
+	public function setCrawlStatus($status) {
+		$this->crawlStatus=$status;
+		return $this;
+	}
+
+
+
+
+
+	public function setContent($buffer) {
+		$this->buffer=$buffer;
+		return $this;
+	}
 
 
 
@@ -71,12 +105,16 @@ class Page
 						'method' => 'HEAD',
 						'header' => array(
 							'Connection: close', // No Keep-Alive
-							'Accept-Encoding: gzip, deflate' // We support content compression
+							'Accept-Encoding: gzip, deflate', // We support content compression
+							'User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0'
+
 						)
 					)
 				)
 			);
 			$this->headers=get_headers($this->url, true);
+
+
 
 			$this->statusCode=$this->headers[0];
 
@@ -118,12 +156,12 @@ class Page
 
 
 	public function get() {
-
 		/*
 		if(!$this->exists()) {
 			return false;
 		}
 		*/
+
 
 
 		if($this->buffer===null) {
@@ -140,6 +178,7 @@ class Page
 
 			$start=microtime(true);
 			$this->buffer=file_get_contents($this->url);
+
 			$this->loadingTime=microtime(true)-$start;
 			$this->bufferSize=strlen($this->buffer);
 		}
@@ -156,8 +195,8 @@ class Page
 			'weight'=>$this->getWeight(),
 			'bufferSize'=>$this->getBufferSize(),
 			'title'=>$this->getTitle(),
-			'content'=>$this->buffer
-
+			'content'=>$this->buffer,
+			'depth'=>$this->depth
 		);
 	}
 
@@ -236,7 +275,7 @@ class Page
 	public function extractLinks($buffer) {
 
 
-		preg_match_all('`<a .*?href\s*=\s*(\'|")(.*?)\1.*?>(.*?)</a>`', $buffer, $matches);
+		preg_match_all('`<a\s+[^>]*?href\s*=\s*(\'|")([^>]*?)\1[^>]*?>(.*?)</a>`si', $buffer, $matches);
 
 		$links=$matches[2];
 		$captions=$matches[3];
@@ -259,7 +298,7 @@ class Page
 				if(!isset($links[$url])) {
 					if (!(strpos($url, 'javascript:') === 0)) {
 						if (!(strpos($url, '#') === 0)) {
-							$links[$url]=new Page($url);
+							$links[$url]=new Page($url, $this->depth+1);
 							$link = new Link($this, $links[$url], $captions[$index]);
 							$filteredLinks[] = $link;
 						}

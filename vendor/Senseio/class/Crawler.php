@@ -19,9 +19,24 @@ class Crawler
 
 	protected $crawledPages=array();
 
-	public function __construct($storage, $startURL=null) {
-		$this->startURL=$startURL;
+	protected $depth;
+
+
+
+	public function __construct($storage, $startURL=null, $depth=0) {
+
+
+		if($startURL instanceof Page) {
+			$this->startPage=$startURL;
+			$this->startURL=$startURL->getURL();
+		}
+		else {
+			$this->startURL=$startURL;
+		}
+
+		$this->depth=$depth;
 		$this->storage=$storage;
+
 	}
 
 
@@ -32,27 +47,26 @@ class Crawler
 
 
 
-	public function run($page=null, $recursive=true, $skipInsert=false) {
-
+	public function run($page=null, $recursive=true, $skipInsert=false, $skipControl=false) {
 
 		if($page) {
 			if(is_string($page)) {
 				$this->startURL=$page;
-				$this->startPage=new Page($this->startURL);
+				$this->startPage=new Page($this->startURL, $this->depth);
 			}
 			else {
 				$this->startURL=$page->getURL();
 				$this->startPage=$page;
 			}
 		}
-		else {
-			$this->startPage=new Page($this->startURL);
+		else if(!$this->startPage instanceof  Page) {
+			$this->startPage=new Page($this->startURL, $this->depth);
 		}
 
 
 		if(!$skipInsert) {
 			if(!$this->storage->pageExists($this->startURL)) {
-				$this->storage->lockPage($this->startPage);
+				//$this->storage->lockPage($this->startPage);
 				$this->storage->savePage($this->startPage);
 			}
 			else if($this->logger) {
@@ -64,37 +78,76 @@ class Crawler
 
 
 
+
+
+
 		if($recursive) {
 
-
-            $links=$this->startPage->getLinks();
-
+			if($this->storage->isPageCrawlable($this->startPage) || $skipControl) {
 
 
+				if(!$skipControl) {
+					$this->storage->pageLockCrawl($this->startPage);
+				}
 
-            if(!$this->storage->isPageCrawled($this->startPage)) {
+
+
+
+                $links=$this->startPage->getLinks();
+
+
+
+
+
+
+
+
+				$pagesToInsert=array();
+
+
                 foreach ($links as $link) {
                     if($link->to()->getURL()!=$this->startURL) {
 
 
 
-                        if(!$this->storage->linkExists($link)) {
+                        //if(!$this->storage->linkExists($link)) {
                             $this->storage->saveLink($link);
-                        }
+                        //}
+
 
 
 
                         if($link->isInternal()) {
 
                             if(!$this->storage->pageExists($link->to())) {
-                                $this->storage->lockPage($link->to());
-                                $this->storage->savePage($link->to());
+	                            //if($this->depth==0) {
+		                            $this->storage->lockPage($link->to());
+		                            $this->storage->savePage($link->to());
+	                            /*
+	                            }
+	                            else {
+		                            $pagesToInsert[]=$link->to();
+	                            }
+	                            */
                             }
                         }
                     }
                 }
+
+				/*
+				if(!$this->depth) {
+					$this->storage->savePages($pagesToInsert);
+				}
+				*/
+
+
+
+
                 $this->storage->pageCrawled($this->startPage);
             }
+			else if($this->startPage->getURL()!='http://www.cosmopolitan.fr') {
+				//die('EXIT '.__FILE__.'@'.__LINE__);
+			}
 		}
 
 
