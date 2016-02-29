@@ -137,12 +137,10 @@ do {
 		$crawler->run(null, true, true, true);
 	}
 
+	$asc=$asc*-1;
 
 
-	//$asc=$asc*-1;
-
-
-} while($notCrawledPages=$pageStorage->getNotCrawledPages($asc));
+} while($notCrawledPages=$pageStorage->getNotCrawledPages(10, $asc));
 
 
 
