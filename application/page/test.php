@@ -16,12 +16,11 @@
 <script>
 
 
-
 	function generateData() {
 		var res = [];
 		var len = 30;
 		while (len--) {
-			res.push((Math.random()*10 + 5));
+			res.push(0);
 		}
 		return res;
 	}
@@ -37,7 +36,7 @@
 			trigger: 'axis'
 		},
 		legend: {
-			data:['s1', 's2']
+			data:['Inserted pages', 'Insert speed', 'Crawled']
 		},
 		xAxis : [
 			{
@@ -71,31 +70,45 @@
 		yAxis : [
 			{
 				type : 'value',
-				scale: false,
-				name : 's1',
+				scale: true,
+				name : 'Inserted pages'
 			},
 			{
 				type : 'value',
-				scale: false,
-				name : 's2',
+				scale: true,
+				name : 'Insert speed',
+                min:0,
+                max: 20
+                //boundaryGap: [0.2, 0.2]
 			}
 		],
 		series : [
 			{
-				name:'s1',
+				name:'Inserted pages',
 				type:'line',
 				smooth:true,
-				//itemStyle: {normal: {areaStyle: {type: 'default'}}},
+				itemStyle: {normal: {areaStyle: {type: 'default'}}},
 
 				data:generateData()
 			},
-			{
-				name:'s2',
-				type:'line',
-				smooth:true,
-				//itemStyle: {normal: {areaStyle: {type: 'default'}}},
-				data: generateData()
-			}
+            {
+                //xAxisIndex: 1,
+                yAxisIndex: 1,
+                name:'Insert speed',
+                type:'bar',
+                smooth:true,
+                //itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                data: generateData()
+            },
+            {
+                name:'Crawled',
+                type:'line',
+                smooth:true,
+                itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                data: generateData()
+            },
+
+
 		]
 	};
 
@@ -107,30 +120,95 @@
 
 	var timeTicket;
 
-
 	var axisData;
 	clearInterval(timeTicket);
+
+    var startTime=new Date();
+
+    console.debug(startTime.getTime());
+
+
+    var lastInsertedPages=null;
+    var lastCrawledPages=null;
+
+
+    var insertedPageAverage=0;
+    var crawledPageAverage=0;
+
+
 	timeTicket = setInterval(function (){
 
-		axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
 
-		// 动态数据接口 addData
-		myChart.addData([
-			[
-				0,        // 系列索引
-				Math.round(5+Math.random() * 10),
-				false,
-				false,
-				axisData
-			],
-			[
-				1,        // 系列索引
-				Math.round(5+Math.random() * 10),
-				false,
-				false,
-				axisData  // 坐标轴标签
-			]
-		]);
+
+        //console.debug(Math.floor(currentTime.getTime()/1000));
+
+
+
+        $.ajax({
+            url:'http://127.0.0.1/Senseio/public/component/crawlerSpeed',
+            success: function(data) {
+
+                var currentTime=new Date();
+
+                axisData = (new Date()).toLocaleTimeString().replace(/^\D*/,'');
+
+                if(lastInsertedPages!==null) {
+                    var deltaPage=data.pages-lastInsertedPages;
+                    var deltaCrawled=data.crawledPages-lastCrawledPages;
+
+                    var delta=Math.floor((currentTime.getTime()-startTime.getTime())/1000);
+
+
+                    console.debug(delta);
+
+                    insertedPageAverage=data.pages/delta;
+                    crawledPageAverage=data.crawledPages/delta;
+
+                    //console.debug(crawledPageAverage);
+                }
+
+
+                lastInsertedPages=data.pages;
+                lastCrawledPages=data.crawledPages;
+
+                //console.debug(lastInsertedPages);
+                //console.debug(lastCrawledPages);
+
+
+                console.debug(insertedPageAverage);
+
+
+                myChart.addData([
+                    [
+                        2,
+                        data.crawledPages,
+                        false,
+                        false,
+                        axisData
+                    ],
+                    [
+                        0,
+                        data.pages,
+                        false,
+                        false,
+                        axisData
+                    ],
+                    [
+                        1,
+                        insertedPageAverage,
+                        false,
+                        false,
+                        axisData
+                    ],
+                ]);
+
+
+            }
+        })
+
+
+
+
 	}, 1000)
 
 
