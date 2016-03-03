@@ -1,3 +1,13 @@
+<?php
+
+
+$test=new \Senseio\Model\Repository('localhost', 'cosmopolitan2');
+
+
+die('EXIT '.__FILE__.'@'.__LINE__);
+
+?>
+
 <!doctype html>
 <html>
 <head>
@@ -138,9 +148,6 @@
 
 	timeTicket = setInterval(function (){
 
-
-
-        //console.debug(Math.floor(currentTime.getTime()/1000));
 
 
 
