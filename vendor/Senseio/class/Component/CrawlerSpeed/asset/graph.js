@@ -32,14 +32,14 @@ option = {
 
 
 
-$('.senseio.crawlerSpeed').each(function() {
-	
-}
+$('.senseio.crawlerSpeed').each(function(index, item) {
 
-)
 
-var myChart = echarts.init(document.querySelector('.senseio.crawlerSpeed'));
-myChart.setOption(option, true);
+	console.debug(item);
+
+
+	item.chart = echarts.init(item);
+	item.chart.setOption(option, true);
 
 
 	var timeTicket;
@@ -59,12 +59,10 @@ myChart.setOption(option, true);
 	var insertedPageAverage=0;
 	var crawledPageAverage=0;
 
+	return;
+
 
 	timeTicket = setInterval(function (){
-
-
-
-
 		$.ajax({
 			url:'http://127.0.0.1/Senseio/public/component/crawlerSpeed',
 			success: function(data) {
@@ -80,8 +78,6 @@ myChart.setOption(option, true);
 					var deltaCrawled=data.crawledPages-lastCrawledPages;
 
 					var delta=Math.floor((currentTime.getTime()-startTime.getTime()));
-
-
 
 
 					insertedPageAverage=deltaPage/(delta/1000);
@@ -102,7 +98,7 @@ myChart.setOption(option, true);
 
 
 				option.series[0].data[0].value = Math.floor(insertedPageAverage*100)/100;
-				myChart.setOption(option, true);
+				item.chart.setOption(option, true);
 
 
 			}
@@ -112,6 +108,12 @@ myChart.setOption(option, true);
 
 
 	}, 1000);
+
+
+
+
+});
+
 
 
 
