@@ -46,3 +46,16 @@ main {
 footer.page-footer {
     margin: 0;
 }
+
+
+
+
+
+
+.component {
+    background-color:#FFF;
+    border:solid 1px #AAA;
+    margin-left: 16px;
+    margin-top: 16px;
+    padding-left:16px;
+}

@@ -52,16 +52,14 @@
 		<a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
 		<ul class="right hide-on-med-and-down">
 			<li><a href="sass.html">Gérer mes sites</a></li>
-			<li><a href="badges.html">Components</a></li>
-			<li><a href="collapsible.html">Javascript</a></li>
+			<li><a href="badges.html">Aide</a></li>
 			<li><a href="mobile.html">Mon compte</a></li>
 		</ul>
 
 
 		<ul class="side-nav" id="mobile-demo">
 			<li><a href="sass.html">Gérer mes sites</a></li>
-			<li><a href="badges.html">Components</a></li>
-			<li><a href="collapsible.html">Javascript</a></li>
+			<li><a href="badges.html">Aide</a></li>
 			<li><a href="mobile.html">Mon compte</a></li>
 		</ul>
 	</div>
@@ -73,7 +71,11 @@
 		<ul>
 			<li>Statistiques générales</li>
 			<li>Crawl</li>
+			<li>Analyse contenus</li>
 			<li>Analyse linking</li>
+			<li>Synthèse</li>
+			<li>Recommendations</li>
+			<li>Raw data</li>
 		</ul>
 
 	</div>

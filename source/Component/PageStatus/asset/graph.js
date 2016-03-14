@@ -8,6 +8,7 @@ function PageStatus(element)
 	this.options=option = {
 		tooltip : {
 			trigger: 'item',
+			formatter: "{b}<br/>{c} ({d}%)"
 		},
 		legend: {
 			orient : 'vertical',
@@ -36,19 +37,12 @@ PageStatus.prototype.run=function() {
 	$.ajax({
 		url:this.serviceURL,
 		success: function(data) {
-			console.log(data);
 
 			for(var status in data) {
 				var key=status;
 				var value=data[status];
 
 				this.options.legend.data.push(key);
-
-
-				console.debug(value);
-				console.debug(key);
-
-				console.debug(this.options)
 
 				this.options.series[0].data.push({
 						value: value,

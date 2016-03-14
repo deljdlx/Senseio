@@ -5,33 +5,15 @@ function PageDepth(element)
 
 	this.serviceURL='http://127.0.0.1/Senseio/public/component/pageStatus';
 
-	/*
-	this.options=  {
-		tooltip : {
-			trigger: 'item',
-		},
-		legend: {
-			orient : 'vertical',
-			x : 'left',
-			data:[]
-		},
-		calculable : true,
-		series : [
-			{
-				type:'pie',
-				radius : '55%',
-				center: ['50%', '60%'],
-				data:[]
-			}
-		]
-	};
-	*/
 
 
 	this.options = {
 
 		tooltip : {
-			trigger: 'axis'
+			trigger: 'axis',
+			formatter: function(params) {
+				return params[0].name+' '+params[0].seriesName + ' : ' + params[0].value + '%'
+			}
 		},
 		legend: {
 			data:[]
@@ -45,7 +27,10 @@ function PageDepth(element)
 		],
 		yAxis : [
 			{
-				type : 'value'
+				type : 'value',
+				axisLabel : {
+					formatter: '{value} %'
+				}
 			}
 		],
 		series : [

@@ -50,13 +50,14 @@ class PageDepth extends \SenseioApplication\Component
 
     public function render($width=400, $height=400) {
         $buffer=parent::render();
+
         return $buffer."\n".
-        //'<div class="senseio crawlerSpeed" style="width: '.$width.'px; height: '.$height.'px; border: solid 1px #A00"></div>'.
-        '<div data-className="PageDepth" class="senseio crawlerSpeed" style="width: '.$width.'px; height: '.$height.'px; border: solid 1px #A00">
-            <meta name="serviceURL" value="http://127.0.0.1/Senseio/public/component/pageDepth"/>
-            hello world
-        </div>'
-            ;
+        '<div class="component">'.
+            '<h4>Profondeur des pages</h4>'.
+            '<div data-className="PageDepth" class="senseio crawlerSpeed" style="width: '.$width.'px; height: '.$height.'px;">
+                <meta name="serviceURL" value="http://127.0.0.1/Senseio/public/component/pageDepth"/>
+            </div>'.
+        '</div>';
     }
 
 
