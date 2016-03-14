@@ -2,11 +2,15 @@
 	"name": "senseio",
 	"description": "SEO crawler",
 	"repositories": [
-		{"type": "vcs", "url": "https://github.com/mongodb/mongo-php-library.git"}
+		{"type": "vcs", "url": "https://github.com/mongodb/mongo-php-library.git"},
+		{"type": "vcs", "url": "https://github.com/laravel/lumen.git"}
+
+
 	],
 	"require":
 	{
-		"mongodb/mongodb": "^1.0.0"
+		"mongodb/mongodb": "^1.0.0",
+		"laravel/lumen-installer": "~1.0"
 	},
 	"require-dev": {
 	},

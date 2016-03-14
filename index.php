@@ -6,24 +6,52 @@ require('bootstrap.php');
 
 
 
+//$configuration=new \SenseioApplication\Configuration\Datasource();
+//$test=new \SenseioApplication\Component();
+
 
 
 
 
 $router=new \Phi\Router();
+$application->setRouter($router);
 
-$router->get('`/component/(?P<component>.*?)$`', function($component) {
 
-    $className='\Senseio\Component\\'.$component;
+
+$application->get('`/component/(?P<component>.*?)$`', function($component) use ($application) {
+
+    $className='\SenseioApplication\Component\\'.$component;
 
     if(class_exists($className)) {
-        $component=new $className();
+
+
+        $dataSource=$application->getDatasource('crawl');
+        $repository=new \SenseioApplication\Model\Repository($dataSource);
+
+        $componentInstance=new $className($repository);
+
+        $output=$componentInstance->run();
+
         header('Content-type: application/json');
-        echo $component->run();
+        echo $output;
         exit();
     }
 });
 
-$router->run();
+
+
+
+
+$application->run();
+
+
+
+include('source/page/test.php');
+
+
+//die('EXIT '.__FILE__.'@'.__LINE__);
+
+
+
 
 

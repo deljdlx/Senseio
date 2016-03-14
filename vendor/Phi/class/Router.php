@@ -3,7 +3,7 @@
 namespace Phi;
 
 
-class Router
+class Router implements \Phi\Interfaces\Router
 {
 
 

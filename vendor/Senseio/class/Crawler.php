@@ -3,10 +3,20 @@
 
 
 namespace Senseio;
+use SenseioApplication\Application;
+
+
+/**
+ * Class Crawler
+ * @property MongoStorage $storage
+ * @package Senseio
+ */
 
 
 class Crawler
 {
+
+
 
 	protected $startURL;
 	protected $startPage;
@@ -22,9 +32,11 @@ class Crawler
 	protected $depth;
 
 
+	protected $lockEngine;
+
+
 
 	public function __construct($storage, $startURL=null, $depth=0) {
-
 
 		if($startURL instanceof Page) {
 			$this->startPage=$startURL;
@@ -37,7 +49,25 @@ class Crawler
 		$this->depth=$depth;
 		$this->storage=$storage;
 
+
 	}
+
+
+
+	public function getLockEngine() {
+		if($this->lockEngine===null) {
+			$this->lockEngine=Application::getInstance()->getDatasource('crawlLock');
+		}
+		return $this->lockEngine;
+	}
+
+
+	public function setLockEngine($engine) {
+		$this->lockEngine=$engine;
+		return $this;
+	}
+
+
 
 
 
@@ -65,6 +95,8 @@ class Crawler
 
 
 		if(!$skipInsert) {
+
+
 			if(!$this->storage->pageExists($this->startURL)) {
 				//$this->storage->lockPage($this->startPage);
 				$this->storage->savePage($this->startPage);
@@ -73,9 +105,6 @@ class Crawler
 				$this->logger->notice('SKIP'."\t".$this->startPage->getURL());
 			}
 		}
-
-
-
 
 
 

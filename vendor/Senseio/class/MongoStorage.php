@@ -25,6 +25,12 @@ class MongoStorage
 
 
 
+	public function getPageCollection() {
+
+	}
+
+
+
 	public function setLogger($logger) {
 		$this->logger=$logger;
 	}
@@ -34,8 +40,8 @@ class MongoStorage
 
 		$fields=array(
 			'url',
-			//'canonical',
-			//'status',
+			'canonical',
+			'status',
 			'crawlStatus',
 			'depth',
 		);

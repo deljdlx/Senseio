@@ -1,0 +1,48 @@
+
+.head {
+    background-color:#619AC8;
+    color: white;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+
+
+main {
+    flex: 1 0 auto;
+    background-color:#EEE;
+    position:relative;
+    min-height:100%;
+
+    display: flex;
+}
+
+
+.leftPanel {
+    /*height:100%;*/
+    width: 300px;
+    flex: 0 0 auto;
+    width:300px;
+    background-color:rgba(62, 62, 62, 1);
+    transition: all 0.3s;
+    color:#FFF;
+}
+
+.leftPanel:hover {
+    width: 0;
+}
+
+
+.rightPanel {
+    flex: 1 1  auto;
+}
+
+
+
+footer.page-footer {
+    margin: 0;
+}
