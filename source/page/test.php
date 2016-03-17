@@ -11,7 +11,7 @@
 <!doctype html>
 <html>
 <head>
-
+<meta charset="utf-8"/>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 
@@ -88,6 +88,18 @@
 		//$crawlerSpeed=new \SenseioApplication\Component\CrawlerSpeed();
 		//echo $crawlerSpeed->render(300,300);
 		?>
+
+
+
+        <!--
+        <div style="float: left; width:600px;">
+            <?php
+            $statistique=new \SenseioApplication\Component\GeneralStatistique();
+            echo $statistique->render(600, 500);
+            ?>
+        </div>
+
+        //-->
 
 
 		<div style="float: left; width:600px;">

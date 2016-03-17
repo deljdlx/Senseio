@@ -196,7 +196,8 @@ class Page
 			'bufferSize'=>$this->getBufferSize(),
 			'title'=>$this->getTitle(),
 			'content'=>$this->buffer,
-			'depth'=>$this->depth
+			'depth'=>$this->depth,
+            'headers'=>$this->getHeaders(),
 		);
 	}
 

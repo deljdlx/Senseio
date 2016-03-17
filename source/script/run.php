@@ -96,7 +96,7 @@ if(in_array('--watch', $argv)) {
 
 
 
-$url='http://www.cosmopolitan.fr';
+$url='http://www.geo.fr';
 
 
 
