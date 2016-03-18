@@ -20,7 +20,7 @@ class Datasource
 
 
 		$driver=new \MongoDB\Client('mongodb://localhost');
-		$database=$driver->selectDatabase('cosmopolitan');
+		$database=$driver->selectDatabase('capital');
 		$this->sources['crawl']=$database;
 
 

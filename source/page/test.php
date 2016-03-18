@@ -85,8 +85,8 @@
 
 
 		<?php
-		//$crawlerSpeed=new \SenseioApplication\Component\CrawlerSpeed();
-		//echo $crawlerSpeed->render(300,300);
+		$crawlerSpeed=new \SenseioApplication\Component\CrawlerSpeed();
+		echo $crawlerSpeed->render(300,300);
 		?>
 
 

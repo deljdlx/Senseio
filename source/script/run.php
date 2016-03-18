@@ -10,6 +10,9 @@ require('bootstrap.php');
 
 
 
+$url='http://www.capital.fr';
+
+
 
 $logger=new \Senseio\Logger();
 
@@ -28,11 +31,6 @@ $pageStorage->setLogger($logger);
 
 
 
-//$pageStorage->getOneNotCrawledPage();
-//die('EXIT '.__FILE__.'@'.__LINE__);
-
-
-//die('EXIT '.__FILE__.'@'.__LINE__);
 
 if(in_array('--reset', $argv)) {
 	$pageStorage->drop();
@@ -94,9 +92,6 @@ if(in_array('--watch', $argv)) {
 
 }
 
-
-
-$url='http://www.cosmopolitan.fr';
 
 
 
