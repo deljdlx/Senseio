@@ -16,6 +16,9 @@ class MongoStorage
 	protected $logger;
 
 
+	protected $pageFilters=array();
+
+
 	public function __construct($database) {
 		$this->database=$database;
 		$this->pages=$this->database->page;
@@ -25,8 +28,16 @@ class MongoStorage
 
 
 
-	public function getPageCollection() {
 
+	public function addPageTitleFilter($function) {
+		$this->pageFilters[]=$function;
+		return $this;
+	}
+
+
+
+	public function getPageCollection() {
+		return $this->pages;
 	}
 
 
@@ -44,6 +55,7 @@ class MongoStorage
 			'status',
 			'crawlStatus',
 			'depth',
+			'normalizedTitle'
 		);
 
 
@@ -108,6 +120,7 @@ class MongoStorage
 		),
 			array(
 				'$set'=>array(
+					'status'=>Page::STATUS_LOCKED,
 					'crawlStatus'=>Page::STATUS_CRAWLING
 				),
 			)
@@ -162,6 +175,13 @@ class MongoStorage
 		}
 
 		$data=$page->getData();
+
+		foreach ($this->pageFilters as $filter) {
+			$data=$filter($data);
+		}
+
+
+
 
 
 		$data['crawlStatus']=Page::STATUS_CREATED;
@@ -439,7 +459,7 @@ class MongoStorage
             );
 
             if($this->logger) {
-                $this->logger->notice('LINK INSERT' ."\t\t".$link->from()->getURL()."\t\t".$link->getCaption());
+                //$this->logger->notice('LINK INSERT' ."\t\t".$link->from()->getURL()."\t\t".$link->getCaption());
             }
         }
         catch(\Exception $exception) {

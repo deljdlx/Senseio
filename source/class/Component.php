@@ -52,7 +52,7 @@ class Component extends \Senseio\Component
 						$buffer.="<script>\n".file_get_contents($assetFilepath.'/'.$fileName)."\n</script>";
 					}
 					elseif($data['extension']=='css') {
-						$buffer.="<style>\n".file_get_contents($assetFilepath.'/'.$fileName)."\n<style>";
+						$buffer.="<style>\n".file_get_contents($assetFilepath.'/'.$fileName)."\n</style>";
 					}
 				}
 			}

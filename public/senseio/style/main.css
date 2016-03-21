@@ -49,6 +49,9 @@ footer.page-footer {
 
 
 
+div {
+    box-sizing: border-box;
+}
 
 
 
@@ -58,4 +61,5 @@ footer.page-footer {
     margin-left: 16px;
     margin-top: 16px;
     padding-left:16px;
+    padding-right:16px;
 }

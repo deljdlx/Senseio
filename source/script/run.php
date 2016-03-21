@@ -10,25 +10,21 @@ require('bootstrap.php');
 
 
 
-$url='http://www.capital.fr';
-
-
-
-$logger=new \Senseio\Logger();
-
 
 /**
  * @var \SenseioApplication\Application application
  */
-$database=$application::getInstance()->getDatasource('crawl');
 
-
-
-
+/*
+$database=\SenseioApplication\Application::getInstance()->getDatasource('crawl');
 $pageStorage=new \Senseio\MongoStorage($database);
+*/
 
-$pageStorage->setLogger($logger);
 
+
+
+$crawlerConfiguration=new \SenseioApplication\Configuration\Crawler();
+$pageStorage=$crawlerConfiguration->getStorage();
 
 
 
@@ -96,12 +92,13 @@ if(in_array('--watch', $argv)) {
 
 
 
-$crawler=new \SenSeio\Crawler($pageStorage, $url);
-$crawler->setLogger($logger);
 
-$lockEngine=new \Senseio\LockEngine($application::getInstance()->getDatasource('crawlLock'));
+$crawler=new \Senseio\Crawler($crawlerConfiguration);
 
-$crawler->setLockEngine($lockEngine);
+
+
+//$lockEngine=new \Senseio\LockEngine($application::getInstance()->getDatasource('crawlLock'));
+//$crawler->setLockEngine($lockEngine);
 
 
 
@@ -120,8 +117,8 @@ do {
 		$page=new \Senseio\Page($notCrawledPage->url, $notCrawledPage->depth);
 		$page->setContent($notCrawledPage->content);
 
-		$crawler=new \Senseio\Crawler($pageStorage, $page, $notCrawledPage->depth);
-		$crawler->setLogger($logger);
+		$crawler=new \Senseio\Crawler($crawlerConfiguration, $page, $notCrawledPage->depth);
+		//$crawler->setLogger($logger);
 		$crawler->run(null, true, true, true);
 	}
 

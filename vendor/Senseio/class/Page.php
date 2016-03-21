@@ -49,6 +49,8 @@ class Page
 
 
 
+
+	const STATUS_LOCKED='LOCKED';
 	const STATUS_CREATED=0;
 	const STATUS_CRAWLING=1;
 	const STATUS_CRAWLED=2;
@@ -112,19 +114,27 @@ class Page
 					)
 				)
 			);
-			$this->headers=get_headers($this->url, true);
+			$headers=get_headers($this->url, true);
 
+			foreach ($headers as $key => &$value) {
+				if(is_array($value)) {
+					$value=end($value);
+				}
+			}
+
+			foreach ($headers as $key => &$value) {
+				if((int) $value) {
+					$value=(int) $value;
+				}
+			}
+
+
+			$this->headers=$headers;
 
 
 			$this->statusCode=$this->headers[0];
 
 
-
-			/*
-			if(strpos($this->headers[0], '200 OK')) {
-				$this->exists=true;
-			}
-			*/
 
 
 			if(isset($this->headers['Content-Length'])) {
@@ -149,6 +159,10 @@ class Page
 		if($this->statusCode===null) {
 			$this->getHeaders();
 		}
+
+
+
+
 		return $this->statusCode;
 	}
 
@@ -187,6 +201,36 @@ class Page
 
 
 	public function getData() {
+
+
+		$headers=$this->getHeaders();
+
+		$buffer=null;
+
+		if(isset($headers['Content-Type'])) {
+
+			if(is_array($headers['Content-Type'])) {
+				print_r($headers);
+				die('EXIT '.__FILE__.'@'.__LINE__);
+			}
+
+
+			if(strpos($headers['Content-Type'], 'text/')) {
+				$buffer=$this->buffer;
+			}
+		}
+
+
+
+		if(!$this->getStatusCode()) {
+			print_r($this->getHeaders());
+			die('EXIT '.__FILE__.'@'.__LINE__);
+		}
+
+
+
+
+
 		return array(
 			'url'=>$this->getURL(),
 			'status'=>$this->getStatusCode(),
@@ -195,10 +239,15 @@ class Page
 			'weight'=>$this->getWeight(),
 			'bufferSize'=>$this->getBufferSize(),
 			'title'=>$this->getTitle(),
-			'content'=>$this->buffer,
-			'depth'=>$this->depth
+			'normalizedTitle'=>$this->getTitle(),
+			'content'=>$buffer,
+			'depth'=>$this->depth,
+            'headers'=>$headers,
 		);
 	}
+
+
+
 
 
 

@@ -11,7 +11,7 @@
 <!doctype html>
 <html>
 <head>
-
+<meta charset="utf-8"/>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 
 
@@ -37,6 +37,10 @@
 
 
 	</style>
+
+
+
+
 
 
 </head>
@@ -85,24 +89,35 @@
 
 
 		<?php
-		$crawlerSpeed=new \SenseioApplication\Component\CrawlerSpeed();
-		echo $crawlerSpeed->render(300,300);
+		//$crawlerSpeed=new \SenseioApplication\Component\CrawlerSpeed();
+		//echo $crawlerSpeed->render(300,300);
 		?>
 
 
-		<div style="float: left; width:600px;">
+
+
+        <div  style="display: inline-block; vertical-align:middle">
+            <?php
+            $statistique=new \SenseioApplication\Component\GeneralStatistique();
+            echo $statistique->render(550, 500);
+            ?>
+        </div>
+
+
+
+
+		<div style="display: inline-block; vertical-align:middle">
 			<?php
-			$pageDepth=new \SenseioApplication\Component\PageDepth();
-			echo $pageDepth->render(600, 500);
+			$pageStatus=new \SenseioApplication\Component\PageStatus();
+			echo $pageStatus->render(600, 500);
 			?>
 		</div>
 
 
-
-		<div style="float: left; width:600px;">
-		<?php
-			$pageStatus=new \SenseioApplication\Component\PageStatus();
-			echo $pageStatus->render(600, 500);
+		<div style="display: inline-block; vertical-align:middle">
+			<?php
+			$pageDepth=new \SenseioApplication\Component\PageDepth();
+			echo $pageDepth->render(600, 500);
 			?>
 		</div>
 

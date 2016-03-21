@@ -17,13 +17,21 @@ class PageStatus extends \SenseioApplication\Component
 
         foreach ($data as $status=>$count) {
 
-            $key=preg_replace('`^.*? `', '', $status);
+            //$key=preg_replace('`^.*? `', '', $status);
 
+            $key=$status;
+
+            /*
             if(!$key) {
                 $key='Undefined status';
             }
+            */
 
-            $pages[$key]=$count;
+            if($key) {
+                $pages[$key]=$count;
+            }
+
+            arsort($pages);
         }
 
 

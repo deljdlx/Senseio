@@ -18,6 +18,8 @@ class Crawler
 
 
 
+	protected $configuration;
+
 	protected $startURL;
 	protected $startPage;
 
@@ -36,7 +38,16 @@ class Crawler
 
 
 
-	public function __construct($storage, $startURL=null, $depth=0) {
+	public function __construct($crawlerConfiguration, $startURL=null, $depth=0) {
+
+
+		$this->configuration=$crawlerConfiguration;
+
+		if(!$startURL) {
+			$startURL=$this->configuration->getRootURL();
+		}
+
+
 
 		if($startURL instanceof Page) {
 			$this->startPage=$startURL;
@@ -47,10 +58,46 @@ class Crawler
 		}
 
 		$this->depth=$depth;
-		$this->storage=$storage;
+		$this->storage=$this->configuration->getStorage();
 
+
+		$this->setLogger($this->configuration->getLogger());
+
+
+
+		$this->storage->addPageTitleFilter(function($pageData) {
+			$pageData['normalizedTitle']=str_ireplace($this->configuration->getSiteName(), '', $pageData['normalizedTitle']);
+			$pageData['normalizedTitle']=$this->normalizePageTitle($pageData['normalizedTitle']);
+			return $pageData;
+
+		});
 
 	}
+
+
+
+
+
+	public function normalizePageTitle($string) {
+
+		$string=mb_strtolower($string);
+
+		$string=str_replace("'", " ", $string);
+		$string=str_replace("’", " ", $string);
+		$string=preg_replace('`\W`u', " ", $string);
+
+
+		$string=removeAccent($string);
+
+		$string=preg_replace('`\s+`', ' ', $string);
+		$string=trim($string);
+
+		return $string;
+
+	}
+
+
+
 
 
 
